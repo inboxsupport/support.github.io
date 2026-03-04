@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support | SwartzTech</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #0b0f1a; overflow: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .input-box { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .input-box:focus { border-color: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); outline: none; transform: translateY(-2px); }
+        .btn-glow:hover { box-shadow: 0 0 20px rgba(37, 99, 235, 0.6); }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="glass w-full max-w-md p-10 rounded-[2.5rem] relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-600/10 rounded-full blur-3xl"></div>
+        
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600/20 rounded-2xl mb-4">
+                <i class="fa-solid fa-headset text-2xl text-blue-500"></i>
+            </div>
+            <h2 class="text-3xl font-extrabold text-white tracking-tight">Support Desk</h2>
+            <p class="text-gray-400 text-sm mt-2 font-medium">contact@support.swartztech.com</p>
+        </div>
+
+        <div id="formWrapper" class="space-y-5">
+            <input type="text" id="name" placeholder="Your Name" class="w-full px-6 py-4 rounded-2xl text-white input-box">
+            <input type="email" id="email" placeholder="Email Address" class="w-full px-6 py-4 rounded-2xl text-white input-box">
+            <textarea id="message" rows="4" placeholder="How can we help?" class="w-full px-6 py-4 rounded-2xl text-white input-box resize-none"></textarea>
+
+            <button onclick="sendData()" id="sendBtn" class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all btn-glow flex items-center justify-center gap-3 group">
+                <span>Send Message</span>
+                <i class="fa-solid fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+            </button>
+        </div>
+
+        <div id="successBox" class="hidden text-center py-10">
+            <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-check text-3xl text-green-500"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white">Sent Successfully!</h3>
+            <p class="text-gray-400 mt-2">We will get back to you soon.</p>
+        </div>
+    </div>
+
+    <script>
+        // আপনার টোকেন এবং আইডি এনক্রিপ্ট করা হলো (Safe from direct eyes)
+        const _0x4a = "Nzg2NTIzNDE3NDpBQUdxWk1PSFRwTVl3MDZ0ZHZ0VVhmcms5N3RGcmRYUWxJ"; // Encoded Token
+        const _0x9b = "LTEwMDM2Nzc4MDgyODQ="; // Encoded Chat ID
+
+        async function sendData() {
+            const n = document.getElementById('name').value;
+            const e = document.getElementById('email').value;
+            const m = document.getElementById('message').value;
+            const btn = document.getElementById('sendBtn');
+
+            if(!n || !e || !m) { alert("Please fill all fields!"); return; }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i> Sending...';
+
+            const t = atob(_0x4a);
+            const c = atob(_0x9b);
+            const msg = `🚀 *New Support Request*\n\n👤 *Name:* ${n}\n📧 *Email:* ${e}\n📝 *Message:* ${m}`;
+
+            try {
+                await fetch(`https://api.telegram.org/bot${t}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: c, text: msg, parse_mode: 'Markdown' })
+                });
+                document.getElementById('formWrapper').classList.add('hidden');
+                document.getElementById('successBox').classList.remove('hidden');
+            } catch (err) {
+                alert("Failed to send message.");
+                btn.disabled = false;
+                btn.innerHTML = 'Send Message';
+            }
+        }
+    </script>
+</body>
+</html>
